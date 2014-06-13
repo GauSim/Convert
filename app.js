@@ -5,13 +5,16 @@ var favicon = require('static-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var lessMiddleware = require('less-middleware');
 var _ = require('underscore');
+var $ = require('jquery');
+
+
+var ViewModelBase = require("./ViewModelBase");
 
 var logic = require("./logic");
 var routes = require('./routes');
 var users = require('./routes/user');
-
-
 
 var app = express();
 
@@ -24,10 +27,14 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+
+app.use(lessMiddleware(path.join(__dirname, 'public')));
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(app.router);
 
-app.get('/', routes.index);
+//app.get('/', routes.index);
+app.get('/', routes.indexController(ViewModelBase,$,_).indexAction);
 app.get('/users', users.list);
 
 /// catch 404 and forwarding to error handler

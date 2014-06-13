@@ -1,9 +1,1 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
- 
-}
-
-a {
-  color: #00B7FF;
-}
+body{padding-top:50px;font:14px "Lucida Grande",Helvetica,Arial,sans-serif;background-color:#f1f1f1;background:url("../images/SimoneAnne-1834.jpg") no-repeat center center fixed;-webkit-background-size:cover;-moz-background-size:cover;-o-background-size:cover;background-size:cover}a{color:#00B7FF}.hr{background:-webkit-linear-gradient(left, #a3ad24 0, #a3ad24 20%, #a3ad24 20%, #a3ad24 40%, #c4262e 40%, #c4262e 60%, #d9709c 60%, #d9709c 80%, #d43 80%) 0 0 no-repeat;height:5px;margin-bottom:20px}
