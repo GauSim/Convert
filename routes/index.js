@@ -4,7 +4,7 @@
 //};
 
 
-exports.indexController = function(ViewModelBase,$,_) {
+exports.indexController = function(ViewModelBase,_) {
     var ViewModel = _.clone(ViewModelBase);
 
     

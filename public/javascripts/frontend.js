@@ -7,14 +7,14 @@
         $("body").append("App: ");
         
         // Warten auf Nachrichten
-      socket.on('welcome', function (data) {
-        $("#from_startjob_jobid").val(data);
-        $("#from_startjob").removeClass('hide');
-        
-        // Eigenen Event vom Client an den Server schicken
-        socket.emit('user agent', navigator.userAgent);
-        $("body").append("online")
-      });
+        socket.on('welcome', function (data) {
+            $("#from_startjob_jobid").val(data);
+            $("#from_startjob").removeClass('hide');
+            
+            // Eigenen Event vom Client an den Server schicken
+            socket.emit('user agent', navigator.userAgent);
+            $("body").append("online")
+        });
         socket.on('jobdone', function (donejob) {
            onJobdone(donejob);
         });

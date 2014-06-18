@@ -7,7 +7,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var lessMiddleware = require('less-middleware');
 var _ = require('underscore');
-var $ = require('jquery');
 
 
 var ViewModelBase = require("./ViewModelBase");
@@ -34,7 +33,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(app.router);
 
 //app.get('/', routes.index);
-app.get('/', routes.indexController(ViewModelBase,$,_).indexAction);
+app.get('/', routes.indexController(ViewModelBase,_).indexAction);
 app.get('/users', users.list);
 
 /// catch 404 and forwarding to error handler
@@ -89,6 +88,10 @@ io.sockets.on('connection', function (socket) {
 
   //socket.broadcast.emit('user_connected');
 
+  socket.on('getid',function() {
+      socket.emit('welcome', logic.func_getID(14));
+  });
+  
   socket.on('createjob',function(job){
       console.log("[app.js]"+jobid);
 
@@ -96,14 +99,11 @@ io.sockets.on('connection', function (socket) {
         // job.dropboxurl
         
         var on_done = function(donejob){
-            
             console.log("[app.js] final callback");
             socket.emit('jobdone', donejob);    
         }
       
       logic.run(job,on_done);
-      
-      
   });
 
   socket.on('user agent', function (data) {

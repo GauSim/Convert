@@ -1,6 +1,6 @@
 var AppConfig = {
     
-    title:"CONVERT!2"
+    title:"VERT-R"
     
 };
 module.exports = AppConfig;
