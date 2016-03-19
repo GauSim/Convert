@@ -8,7 +8,7 @@ npm install // will install deps, typings and triggers first build
 ```
 
 ```
-import { convertToWav } from './lib';
+import { convertToWav } from 'convert';
 
 const file = "http://www.html5tutorial.info/media/vincent.mp3"
 

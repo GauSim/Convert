@@ -1,35 +1,45 @@
 import * as request from 'request';
 import * as jsdom from 'jsdom';
 
+interface IFileType {
+    name: string;
+    ext: string;
+}
+export class FILETYPES {
+    static wav: IFileType = { name: 'wav', ext: '.wav' }
+}
 
-var config_service_url = 'http://www.convertfiles.com/converter.php';
-var config_service_host = "www.convertfiles.com";
-var config_headers = {
+const SERVICE_HOST = "www.convertfiles.com";
+const SERVICE_URL = `http://${SERVICE_HOST}`;
+const REQUEST_HEADERS = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Encoding": "gzip,deflate,sdch",
     "Accept-Language": "de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4,nl;q=0.2",
     "Cache-Control": "max-age=0",
     "Connection": "keep-alive",
     "DNT": " 1",
-    "Host": config_service_host,
+    "Host": SERVICE_HOST,
     "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.131 Safari/537.36"
 };
 
-export function createJob(fileurl: string, id: string) {
+export function createJob(fileType: IFileType, fileurl: string) {
+
+    const jobId = createId(14);
+    const form = {
+        download_url: fileurl,
+        file_or_url: 'url',
+        youtube_mode: 'default',
+        input_format: '.' + fileExtension(fileurl),
+        output_format: fileType.ext,
+        APC_UPLOAD_PROGRESS: jobId
+    };
+
     return new Promise((ok, fail) => {
-        const form = {
-            download_url: fileurl,
-            file_or_url: 'url',
-            youtube_mode: 'default',
-            input_format: '.' + fileExtension(fileurl),
-            output_format: '.wav',
-            APC_UPLOAD_PROGRESS: id
-        };
-        request.post({ url: config_service_url, form: form, headers: config_headers }, function(e, r, body) {
-            if (!e && r.statusCode == 200)
-                ok(id);
+        request.post({ url: `${SERVICE_URL}/converter.php`, form: form, headers: REQUEST_HEADERS }, (error, r, body) => {
+            if (!error && r.statusCode == 200)
+                ok(jobId);
             else
-                fail(e);
+                fail(error);
         });
     });
 }
@@ -66,7 +76,7 @@ export function pollJob(id: string) {
             }
         }
         interval = setInterval(() => {
-            request.get({ url: `http://www.convertfiles.com/getprogress.php?progress_key=${id}`, headers: config_headers }, parseBody);
+            request.get({ url: `${SERVICE_URL}/getprogress.php?progress_key=${id}`, headers: REQUEST_HEADERS }, parseBody);
         }, 1000);
     });
 }
@@ -120,7 +130,7 @@ export function getJobDownloadUrl(id: string) {
         }
 
         interval = setInterval(() => {
-            request.post({ url: `http://www.convertfiles.com/convertrogressbar.php?progress_key=${id}&i=1` }, parseBody);
+            request.post({ url: `${SERVICE_URL}/convertrogressbar.php?progress_key=${id}&i=1` }, parseBody);
         }, 1000);
     });
 }

@@ -1,10 +1,8 @@
-import { createId, createJob, pollJob, getJobDownloadUrl } from './lib/index';
+import { createId, createJob, pollJob, getJobDownloadUrl, FILETYPES } from './lib/index';
 
 
-const start = (file: string) => {
-    console.log('[START]');
-    const jobId = createId(14);
-    return createJob(file, jobId)
+export function convertToWav(file: string) {
+    return createJob(FILETYPES.wav, file)
         .then(pollJob)
         .then(getJobDownloadUrl);
 }
@@ -13,13 +11,15 @@ const jobId = createId(3);
 const file = "http://www.html5tutorial.info/media/vincent.mp3?" + jobId;
 
 
-start(file)
-    .then(e => {
+// Test
+console.log('[START]');
+convertToWav(file)
+    .then(result => {
         console.log('[DONE]');
-        console.log(e);
+        console.log(result);
     })
-    .catch(e => {
+    .catch(error => {
         console.log('[EXIT ERROR]');
-        console.log(e);
+        console.log(error);
     });
 
