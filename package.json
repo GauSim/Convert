@@ -8,6 +8,7 @@
         "test": "echo \"Error: no test specified\" && exit 1",
         "start": "node ./dist",
         "build": "tsc -p .",
+        "postbuild": "npm run bundle",
         "clean": "find ./dist/ -type f -name '*.js' -delete && find ./dist/ -type f -name '*.js.map' -delete",
         "watch-serve": "nodemon -L --exec 'npm run start' ./dist",
         "prewatch": "npm run clean",

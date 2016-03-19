@@ -3,19 +3,22 @@ const { Component } = React;
 
 
 class ConvertForm extends Component<{}, {}> {
-    inputURL: HTMLInputElement = null;
+    inputField: HTMLInputElement = null;
 
     handleClick = () => {
-        console.log(this.inputURL.value);
+        if (this.inputField.validity.valid) {
+            console.log(this.inputField.value);
+        }
     }
 
     render() {
         return <div>
             <div className='form-group'>
                 <label htmlFor='url-input'>enter url: </label>
-                <input ref={(ref) => this.inputURL = ref} type='url' className='form-control' id='url-input' placeholder='http:// ... ' />
+                <input ref={(ref) => this.inputField = ref} type='url' className='form-control' id='url-input' placeholder='http:// ... ' />
             </div>
             <input
+                disabled={ true }
                 type="button"
                 value="Focus the text input"
                 className='btn btn-primary'
