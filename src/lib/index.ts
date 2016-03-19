@@ -1,5 +1,6 @@
 import * as request from 'request';
 import * as jsdom from 'jsdom';
+import * as jquery from 'jquery';
 
 interface IFileType {
     name: string;
@@ -48,7 +49,10 @@ export function pollJob(id: string) {
     return new Promise((ok, fail) => {
         let done = false;
         let interval;
+        let timeout;
+
         const onDone = (r) => {
+            clearTimeout(timeout);
             clearInterval(interval);
             ok(r);
         }
@@ -57,7 +61,7 @@ export function pollJob(id: string) {
             fail(r);
         }
 
-        setTimeout(() => {
+        timeout = setTimeout(() => {
             if (!done) {
                 onFail(new Error('Timeout'));
             }
@@ -66,7 +70,7 @@ export function pollJob(id: string) {
 
         const parseBody = (e, r, body) => {
             if (!e && r.statusCode == 200) {
-                console.log("[PROGRESS]" + body);
+                console.log("[PROGRESS]:" + body);
                 if (body == "100") {
                     done = true;
                     onDone(id);
@@ -81,28 +85,34 @@ export function pollJob(id: string) {
     });
 }
 
+interface IJSDOMWindow extends Window {
+    $: JQueryStatic
+}
+
 export function getJobDownloadUrl(id: string) {
-    return new Promise((ok, faik) => {
+    return new Promise((ok, fail) => {
         let done = false;
         let interval;
-
-        const onFail = (e) => {
-            clearInterval(interval);
-            onFail(e);
-        }
+        let timeout;
 
         const onDone = (d) => {
+            clearTimeout(timeout);
             clearInterval(interval);
             ok(d);
         }
 
-        setTimeout(() => {
+        const onFail = (e) => {
+            clearInterval(interval);
+            fail(e);
+        }
+
+        timeout = setTimeout(() => {
             if (!done) {
                 onFail(new Error('Timeout'));
             }
         }, 15000);
 
-        const queryHtml = (error, window: any) => {
+        const queryHtml = (error, window: IJSDOMWindow) => {
             if (error) {
                 return onFail(error);
             }
