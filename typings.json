@@ -11,6 +11,8 @@
         "jsdom": "registry:dt/jsdom#2.0.0+20160316155526",
         "mime": "registry:dt/mime#0.0.0+20160316155526",
         "node": "registry:dt/node#4.0.0+20160319033040",
+        "react": "registry:dt/react#0.14.0+20160319053454",
+        "react-dom": "registry:dt/react-dom#0.14.0+20160316155526",
         "request": "registry:dt/request#0.0.0+20160316155526",
         "serve-static": "registry:dt/serve-static#0.0.0+20160317120654"
     }

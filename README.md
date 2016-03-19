@@ -22,6 +22,6 @@ convertToWav(file)
 npm run watch // will trigger typescript watcher 
 ```
 ```
-npm run start // will nodemon (watcher) that will restart server on changes 
+npm run watch-serve // will nodemon (watcher) that will restart server on changes 
 ```
 

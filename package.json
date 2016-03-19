@@ -12,17 +12,26 @@
         "watch-serve": "nodemon -L --exec 'npm run start' ./dist",
         "prewatch": "npm run clean",
         "watch": " npm run build -- -w",
-        "typings": "typings install"
+        "typings": "typings install",
+        "bundle": "browserify './dist/public/client.js' -o './dist/public/bundle.js'"
     },
-    "author": "simon",
+    "author": "Simon Gausmann",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/GauSim/Convert.git"
+    },
     "license": "ISC",
     "devDependencies": {
         "typescript": "^1.8.7",
         "typings": "^0.7.9"
     },
     "dependencies": {
+        "browserify": "^13.0.0",
+        "express": "^4.13.4",
         "jsdom": "^8.1.0",
         "nodemon": "^1.9.1",
+        "react": "^0.14.7",
+        "react-dom": "^0.14.7",
         "request": "^2.69.0"
     }
 }
