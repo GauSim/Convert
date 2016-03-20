@@ -1,9 +1,9 @@
 import * as React from 'react';
-var fetch: (url: string) => Promise<{ status: number, json: () => any }> = require('universal-fetch');
+const fetch: (url: string) => Promise<{ status: number, headers: any; type: "basic", statusText: string, body: any, json: () => any }> = require('universal-fetch');
 
 
-function startJob(url: string) {
-    return fetch(`/api/convert/?type=wav&url=${url}`)
+function startJob(type: string, url: string) {
+    return fetch(`/api/convert/?type=${type}&url=${url}`)
         .then(r => {
             if (r.status !== 200) {
                 throw new Error('Bad response from server');
@@ -14,28 +14,35 @@ function startJob(url: string) {
 
 
 const demoFile = "http://www.html5tutorial.info/media/vincent.mp3"
+const validate = (file) => (file && file.indexOf('mp3') > -1);
+
+
+interface IConvertFormState {
+    inputURL: string;
+    isLoading: boolean;
+    downloadURL: string;
+    isValid: boolean;
+}
 
 class ConvertForm extends React.Component<{}, {}> {
 
-    state: { inputURL: string, isLoading: boolean, downloadURL: string } = { inputURL: demoFile, isLoading: false, downloadURL: null };
-    inputField: HTMLInputElement;
-
+    state: IConvertFormState = { inputURL: demoFile, isLoading: false, downloadURL: null, isValid: validate(demoFile) };
+    inputField: HTMLInputElement = null;
 
     handleChange = (event) => {
-        if (this.inputField.validity.valid) {
-            this.setState({ inputURL: event.target.value });
-        }
+        const isValid = (this.inputField.validity.valid && validate(event.target.value));
+        this.setState({ inputURL: event.target.value, isValid: isValid });
     }
 
     handleClick = () => {
         const url = this.state.inputURL + `?${Date.now()}`;
         this.setState({ isLoading: true });
-        startJob(url)
+
+        startJob('wav', url)
             .then((result: { id: string, downloadURL: string; deleteURL: string; }) => {
-                console.log(result);
-                this.setState({ inputURL: null, downloadURL: result.downloadURL });
+                this.setState({ inputURL: null, isValid: false, downloadURL: result.downloadURL });
             })
-            .catch(r => console.log(r))
+            .catch(r => console.error(r))
             .then(() => {
                 this.setState({ isLoading: false });
             });
@@ -43,7 +50,7 @@ class ConvertForm extends React.Component<{}, {}> {
 
     render() {
         return <div>
-
+            { this.state.isValid ? null : 'error' }
             <div className='form-group'>
                 <label htmlFor='url-input'>enter url: </label>
                 <input
@@ -61,7 +68,7 @@ class ConvertForm extends React.Component<{}, {}> {
                 type="button"
                 value="to wav"
                 className='btn btn-primary'
-                onClick={this.handleClick}
+                onClick={ this.handleClick }
                 />
 
             { this.state.downloadURL ? <a className="btn btn-default" href={ this.state.downloadURL } target='_blank' > download </a> : '' }
