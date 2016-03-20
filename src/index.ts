@@ -3,44 +3,39 @@ import * as DOMServer from 'react-dom/server';
 import { convertToWav } from './convert';
 import { Page } from './public/index';
 
-const file = "http://www.html5tutorial.info/media/vincent.mp3?" + Date.now();
-console.log(file);
-
-
-
 const server = express();
 
 server.use('/public', express.static('dist/public'));
-server.use((req, res) => {
+server.use('/api/convert', (req, res) => {
+    const url = req.query['url'];
+    const type = req.query['type'];
+    if (!url || !type) {
+        throw new Error('missing param');
+    }
 
-
-    // Test
-    /*
     console.log('[START]');
-    convertToWav(file)
+    convertToWav(url)
         .then(result => {
             console.log('[DONE]');
-            console.log(result);
+            res.status(200);
+            res.end(JSON.stringify(result));
         })
         .catch(error => {
             console.log('[EXIT ERROR]');
-            console.log(error);
+            res.status(500);
+            res.end(JSON.stringify(error));
         });
-
-*/
-
-    const html = `  <html> 
-                        <head>
-                            <script src='/public/bundle.js'></script>
-                            <link rel='stylesheet' id='main-css'  href='https://bootswatch.com/cosmo/bootstrap.min.css' type='text/css' media='all' />
-                        </head>
-                        <body>
-                            <div id='root'>${DOMServer.renderToString(Page)}</div>
-                        </body>
-                    </html>`;
-
-    res.end(html);
-
+});
+server.use((req, res) => {
+    res.end(`<html> 
+                <head>
+                    <script src='/public/bundle.js'></script>
+                    <link rel='stylesheet' id='main-css'  href='https://bootswatch.com/cosmo/bootstrap.min.css' type='text/css' media='all' />
+                    </head>
+                <body>
+                    <div id='root'>${DOMServer.renderToString(Page)}</div>
+                </body>
+            </html>`);
 });
 
 // start the server 
